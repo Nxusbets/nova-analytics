@@ -35,3 +35,22 @@
   - **FUNDING.yml**: Cleaned out old sponsorship references (kiranism, kir4n).
   - **Build verification**: `npm run build` succeeded with zero errors (26 routes generated).
 - **Status**: ✅ Complete.
+
+---
+
+## Entry 3: Landing Page Implementation (Complete)
+
+- **Date**: 2026-06-09
+- **Goal**: Create a high-converting, mobile-friendly public landing page at the root route (`/`) with Hero, Features, and CTA sections, redirecting authenticated users to `/dashboard/overview`.
+- **Actions Taken**:
+  - **Dashboard route**: Confirmed dashboard already lives at `/dashboard/overview` — no route migration needed.
+  - **Root page** (`src/app/page.tsx`): Converted from an unconditional auth redirect to a smart landing page — authenticated users go to `/dashboard/overview`, unauthenticated visitors see the marketing page.
+  - **Landing components** created at `src/components/landing/`:
+    - **`header.tsx`**: Fixed-position nav bar with Nova logo, scroll-aware glass morphism effect (`backdrop-blur-xl` + border on scroll), desktop nav links (Features, About, Get Started), mobile CTA button.
+    - **`hero.tsx`**: Full-viewport hero with radial gradient overlays (Deep Indigo + Teal), staggered reveal animation (`motion` library), gradient text headline ("Turn data into decisions."), beta badge, dual CTAs ("Start free trial" / "Sign in"), and a metrics bar showing 3 statistics with gradient number styling.
+    - **`features.tsx`**: 6 feature cards in a responsive 3-column grid (Real-time Analytics, Custom Dashboards, Team Workspaces, Powerful Reports, Data Alerts, Secure by Default). Each card has a themed icon, title, and description. Scroll-triggered stagger animation via `motion`.
+    - **`cta.tsx`**: Full-width CTA card with gradient backgrounds, centered headline, description, and dual CTAs. "Start free trial" leads to sign-up, "Sign in" leads to login.
+    - **`footer.tsx`**: Simple footer with Nova logo, nav links (About, Privacy, Terms), and copyright. Server component.
+  - **Design**: Clean editorial style using the Nova brand palette (Deep Indigo primary, Teal accent). `motion/react` for scroll-triggered stagger animations. Fully responsive with mobile-first Tailwind breakpoints.
+  - **Build verification**: `npm run build` succeeded with zero errors (26 routes).
+- **Status**: ✅ Complete.

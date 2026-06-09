@@ -54,3 +54,19 @@
   - **Design**: Clean editorial style using the Nova brand palette (Deep Indigo primary, Teal accent). `motion/react` for scroll-triggered stagger animations. Fully responsive with mobile-first Tailwind breakpoints.
   - **Build verification**: `npm run build` succeeded with zero errors (26 routes).
 - **Status**: ✅ Complete.
+
+---
+
+## Entry 4: Authentication Flow (Complete)
+
+- **Date**: 2026-06-09
+- **Goal**: Implement functional sign-in/sign-up pages with a straightforward auth mechanism, ensuring successful login routes to `/dashboard`.
+- **Actions Taken**:
+  - **Auth provider**: Kept Clerk (already deeply integrated — middleware, dashboard guards, keyless mode support). Clerk works out of the box with zero config via keyless mode.
+  - **Sign-in page** (`sign-in-view.tsx`): Fixed broken "Login" link from `/examples/authentication` to `/auth/sign-up` (creates cross-navigation between auth pages).
+  - **Sign-up page** (`sign-up-view.tsx`): Fixed broken "Sign Up" link from `/examples/authentication` to `/auth/sign-in`.
+  - **Redirect flow**: Already configured via env vars — `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL` and `NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL` both point to `/dashboard/overview`.
+  - **Route protection**: Middleware (`/src/proxy.ts`) protects all `/dashboard/*` routes via `clerkMiddleware`.
+  - **Auth routes**: `/auth` redirects to `/auth/sign-in`. Clerk's keyless mode shows a setup popup in dev (click to claim keys). The app functions immediately with no environment variables.
+  - **Build verification**: `npm run build` succeeded with zero errors (26 routes).
+- **Status**: ✅ Complete.

@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth, useOrganizationList } from '@clerk/nextjs';
+import { useAuthContext } from '@/hooks/use-auth';
 import { Icons } from '@/components/icons';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -20,45 +20,29 @@ import {
   SidebarMenuItem,
   useSidebar
 } from '@/components/ui/sidebar';
-import { useEffect } from 'react';
 
 export function OrgSwitcher() {
   const { isMobile, state } = useSidebar();
   const router = useRouter();
-  const { isLoaded, setActive, userMemberships } = useOrganizationList({
-    userMemberships: {
-      infinite: true,
-      keepPreviousData: false
-    }
-  });
-
-  const { orgId } = useAuth();
-
-  useEffect(() => {
-    if (userMemberships?.revalidate) {
-      void userMemberships.revalidate();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only revalidate when org changes, not on every userMemberships ref change
-  }, [orgId]);
+  const { orgId, orgMemberships, setActiveOrg, isLoaded } = useAuthContext();
 
   // Get the currently active organization
-  const activeOrganization = userMemberships?.data?.find(
-    (membership) => membership.organization.id === orgId
-  )?.organization;
+  const activeOrganization =
+    orgMemberships.data.find((membership) => membership.organization.id === orgId)?.organization ??
+    null;
 
   // Handle organization switch
   const handleOrganizationSwitch = async (organizationId: string) => {
-    if (orgId === organizationId || !setActive) {
-      return; // Already active or setActive not available
+    if (orgId === organizationId || !setActiveOrg) {
+      return;
     }
     try {
-      await setActive({ organization: organizationId });
+      await setActiveOrg(organizationId);
     } catch (error) {
       console.error('Failed to switch organization:', error);
     }
   };
 
-  // Show loading state
   if (!isLoaded) {
     return (
       <SidebarMenu>
@@ -83,8 +67,7 @@ export function OrgSwitcher() {
     );
   }
 
-  // Show create organization option if no organizations
-  if (!userMemberships?.data || userMemberships.data.length === 0) {
+  if (orgMemberships.data.length === 0) {
     return (
       <SidebarMenu>
         <SidebarMenuItem>
@@ -119,8 +102,7 @@ export function OrgSwitcher() {
     );
   }
 
-  // Use active organization or first organization as fallback
-  const displayOrganization = activeOrganization || userMemberships.data[0]?.organization;
+  const displayOrganization = activeOrganization || orgMemberships.data[0]?.organization;
 
   if (!displayOrganization) {
     return null;
@@ -157,7 +139,7 @@ export function OrgSwitcher() {
               >
                 <span className='truncate font-medium'>{displayOrganization.name}</span>
                 <span className='text-muted-foreground truncate text-xs'>
-                  {userMemberships.data.find((m) => m.organization.id === displayOrganization.id)
+                  {orgMemberships.data.find((m) => m.organization.id === displayOrganization.id)
                     ?.role || 'Organization'}
                 </span>
               </div>
@@ -179,7 +161,7 @@ export function OrgSwitcher() {
             <DropdownMenuLabel className='text-muted-foreground text-xs'>
               Organizations
             </DropdownMenuLabel>
-            {userMemberships.data.map((membership, index) => {
+            {orgMemberships.data.map((membership, index) => {
               const isActive = membership.organization.id === orgId;
               return (
                 <DropdownMenuItem

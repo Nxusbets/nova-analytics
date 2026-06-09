@@ -17,7 +17,7 @@
  */
 
 import { useMemo } from 'react';
-import { useOrganization, useUser } from '@clerk/nextjs';
+import { useAuthContext } from '@/hooks/use-auth';
 import type { NavItem, NavGroup } from '@/types';
 
 /**
@@ -27,23 +27,17 @@ import type { NavItem, NavGroup } from '@/types';
  * @returns Filtered items
  */
 export function useFilteredNavItems(items: NavItem[]) {
-  const { organization, membership } = useOrganization();
-  const { user } = useUser();
+  const { user, organization, permissions, role } = useAuthContext();
 
-  // Memoize context and permissions
   const accessContext = useMemo(() => {
-    const permissions = membership?.permissions || [];
-    const role = membership?.role;
-
     return {
       organization: organization ?? undefined,
       user: user ?? undefined,
-      permissions: permissions as string[],
-      role: role ?? undefined,
+      permissions,
+      role: role,
       hasOrg: !!organization
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- using stable primitives to avoid infinite re-renders from unstable Clerk object refs
-  }, [organization?.id, user?.id, membership?.permissions, membership?.role]);
+  }, [organization?.id, user?.id, permissions, role]);
 
   // Filter items synchronously (all client-side)
   const filteredItems = useMemo(() => {

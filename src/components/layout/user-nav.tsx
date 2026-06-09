@@ -10,10 +10,11 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { UserAvatarProfile } from '@/components/user-avatar-profile';
-import { SignOutButton, useUser } from '@clerk/nextjs';
+import { useAuthContext } from '@/hooks/use-auth';
+import { isClerkConfigured } from '@/lib/demo-auth';
 import { useRouter } from 'next/navigation';
 export function UserNav() {
-  const { user } = useUser();
+  const { user, signOut } = useAuthContext();
   const router = useRouter();
   if (user) {
     return (
@@ -42,9 +43,16 @@ export function UserNav() {
             <DropdownMenuItem>New Team</DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <SignOutButton redirectUrl='/auth/sign-in' />
-          </DropdownMenuItem>
+          {isClerkConfigured() ? (
+            <DropdownMenuItem>
+              {(() => {
+                const { SignOutButton } = require('@clerk/nextjs');
+                return <SignOutButton redirectUrl='/auth/sign-in' />;
+              })()}
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={() => signOut()}>Sign out</DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     );

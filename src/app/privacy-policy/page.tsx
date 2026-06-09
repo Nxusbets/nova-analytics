@@ -93,10 +93,10 @@ export default function PrivacyPolicyPage() {
             If you have any questions, concerns, or requests regarding this Privacy Policy or our
             data practices, please feel free to contact us at{' '}
             <a
-              href='mailto:contact@kiranism.dev'
+              href='mailto:privacy@novaanalytics.io'
               className='text-primary font-medium hover:underline'
             >
-              contact@kiranism.dev
+              privacy@novaanalytics.io
             </a>
             .
           </p>

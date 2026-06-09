@@ -1,10 +1,10 @@
 import { buttonVariants } from '@/components/ui/button';
-import { GitHubStarsButton } from '@/components/github-stars-button';
 import { cn } from '@/lib/utils';
 import { SignIn as ClerkSignInForm } from '@clerk/nextjs';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { InteractiveGridPattern } from './interactive-grid';
+import { Icons } from '@/components/icons';
 
 export const metadata: Metadata = {
   title: 'Authentication',
@@ -26,19 +26,8 @@ export default function SignInViewPage() {
       <div className='relative hidden h-full flex-col p-10 lg:flex dark:border-r'>
         <div className='absolute inset-0 bg-sidebar' />
         <div className='text-sidebar-foreground relative z-20 flex items-center text-lg font-medium'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            className='mr-2 h-6 w-6'
-          >
-            <path d='M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3' />
-          </svg>
-          Logo
+          <Icons.dashboard className='mr-2 size-6' />
+          Nova Analytics
         </div>
         <InteractiveGridPattern
           className={cn(
@@ -49,47 +38,22 @@ export default function SignInViewPage() {
         <div className='text-sidebar-foreground relative z-20 mt-auto'>
           <blockquote className='space-y-2'>
             <p className='text-lg'>
-              &ldquo;This starter template has saved me countless hours of work and helped me
-              deliver projects to my clients faster than ever before.&rdquo;
+              &ldquo;Nova Analytics transformed how we understand our data. Real-time insights,
+              beautiful dashboards, and zero friction.&rdquo;
             </p>
-            <footer className='text-sidebar-foreground/70 text-sm'>Random Dude</footer>
+            <footer className='text-sidebar-foreground/70 text-sm'>
+              Sarah Chen, Data Lead at TechFlow
+            </footer>
           </blockquote>
         </div>
       </div>
       <div className='flex h-full items-center justify-center p-4 lg:p-8'>
         <div className='flex w-full max-w-md flex-col items-center justify-center space-y-6'>
-          {/* github link  */}
-          <GitHubStarsButton
-            owner='kiranism'
-            repo='next-shadcn-dashboard-starter'
-            showRepo
-            variant='outline'
-            size='default'
-          />
           <ClerkSignInForm
             initialValues={{
-              emailAddress: 'your_mail+clerk_test@example.com'
+              emailAddress: 'admin@novaanalytics.io'
             }}
           />
-          <div className='text-muted-foreground space-y-2 px-8 text-center text-xs'>
-            <p>
-              This is an{' '}
-              <Link href='/about' className='hover:text-primary underline underline-offset-4'>
-                open-source project
-              </Link>{' '}
-              for demo purposes. Authentication is handled securely by Clerk.
-            </p>
-            <p>
-              <Link
-                href='https://github.com/kiranism/next-shadcn-dashboard-starter'
-                target='_blank'
-                className='hover:text-primary underline underline-offset-4'
-              >
-                View on GitHub
-              </Link>
-            </p>
-          </div>
-
           <p className='text-muted-foreground px-8 text-center text-sm'>
             By clicking continue, you agree to our{' '}
             <Link

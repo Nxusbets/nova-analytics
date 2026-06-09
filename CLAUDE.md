@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This is a Next.js 16 + shadcn/ui admin dashboard starter kit.
+This is a Nova Analytics whitelabel data dashboard built with Next.js 16 + shadcn/ui.
 
 ## Key References
 

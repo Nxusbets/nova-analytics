@@ -5,12 +5,13 @@ export default function CtaGithub() {
   return (
     <Button variant='ghost' asChild size='sm' className='group hidden sm:flex'>
       <a
-        href='https://github.com/Kiranism/next-shadcn-dashboard-starter'
+        href='https://novaanalytics.io'
         rel='noopener noreferrer'
         target='_blank'
-        className='dark:text-foreground transition-colors duration-300 hover:text-[#24292e] dark:hover:text-yellow-400'
+        className='dark:text-foreground text-sm font-medium transition-colors duration-300 hover:text-primary'
       >
-        <Icons.github className='transition-transform duration-300 group-hover:animate-bounce' />
+        <Icons.dashboard className='size-4' />
+        <span className='ml-1'>Nova</span>
       </a>
     </Button>
   );

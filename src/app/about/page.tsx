@@ -18,12 +18,11 @@ export default function AboutPage() {
         <div className='space-y-8'>
           {/* Open Source Section */}
           <section className='bg-card rounded-2xl border p-8 shadow-sm'>
-            <h2 className='text-foreground mb-4 text-xl font-semibold'>Open-Source Project</h2>
+            <h2 className='text-foreground mb-4 text-xl font-semibold'>About Nova Analytics</h2>
             <p className='text-muted-foreground text-lg leading-relaxed'>
-              This is an open-source Next.js admin dashboard starter built with modern web
-              technologies. It provides a solid foundation for building powerful admin interfaces
-              and dashboards. The source code is freely available for developers to use, modify, and
-              distribute.
+              Nova Analytics is a modern data analytics dashboard built with Next.js and shadcn/ui.
+              It provides real-time insights, beautiful visualizations, and a powerful platform for
+              understanding your data. Designed for teams that need clarity and speed.
             </p>
           </section>
 
@@ -31,10 +30,9 @@ export default function AboutPage() {
           <section className='bg-card rounded-2xl border p-8 shadow-sm'>
             <h2 className='text-foreground mb-4 text-xl font-semibold'>Demo Purpose</h2>
             <p className='text-muted-foreground text-lg leading-relaxed'>
-              This application serves as a demo for demonstration purposes. It showcases the
-              features, components, and capabilities of the admin dashboard starter. Feel free to
-              explore the interface, test the functionality, and evaluate if it meets your project
-              requirements.
+              This application showcases the features and capabilities of Nova Analytics. Feel free
+              to explore the interface, test the functionality, and see how it can help your team
+              make better data-driven decisions.
             </p>
           </section>
 
@@ -71,7 +69,7 @@ export default function AboutPage() {
         {/* Footer Note */}
         <div className='mt-12 text-center'>
           <p className='text-muted-foreground text-sm'>
-            Built with Next.js, Tailwind CSS, and shadcn/ui
+            Nova Analytics — Turn data into decisions.
           </p>
         </div>
       </div>

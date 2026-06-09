@@ -16,8 +16,13 @@ const META_THEME_COLORS = {
 };
 
 export const metadata: Metadata = {
-  title: 'Next Shadcn',
-  description: 'Basic dashboard with Next.js and Shadcn'
+  title: 'Nova Analytics',
+  description:
+    'Modern data analytics dashboard — insights, metrics, and reporting at your fingertips.',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg'
+  }
 };
 
 export const viewport: Viewport = {

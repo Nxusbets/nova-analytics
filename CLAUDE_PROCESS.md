@@ -149,4 +149,36 @@ npm run build
 
 ---
 
+## Round 2 — Entry 2: Set Up Supabase & Database Schema
+
+- **Date**: 2026-06-10
+- **Goal**: Create Supabase integration for chat history persistence.
+
+### Actions Taken
+1. **Installed** `@supabase/supabase-js` dependency
+2. **Created** `src/lib/supabase.ts` — Server-side Supabase admin client using `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` env vars. Uses `autoRefreshToken: false` and `persistSession: false` since it's a backend-only service client.
+3. **Created** SQL migration at `supabase/migrations/001_create_chat_tables.sql` with two tables:
+   - `conversations` — `id`, `user_id`, `title`, `created_at`, `updated_at`
+   - `messages` — `id`, `conversation_id` (FK + CASCADE), `role` (CHECK user/assistant/system), `content`, `created_at`
+   - Indexes on `user_id` and `conversation_id`
+4. **Updated** `env.example.txt` — Added `OPENAI_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` sections with instructions. Removed the "keyless mode" messaging for Clerk since demo mode is gone.
+
+### Files Created
+- `src/lib/supabase.ts` — Supabase admin client
+- `supabase/migrations/001_create_chat_tables.sql` — Schema migration
+
+### Commands Run
+```bash
+npm install @supabase/supabase-js
+mkdir -p supabase/migrations
+```
+
+### Build Verification
+- `npm run build` — zero errors.
+
+### Status
+✅ Complete.
+
+---
+
 ## Round 2 — Entry 3: [Next Task]

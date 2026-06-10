@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';

@@ -85,6 +85,7 @@ export function MessageComposer({
             type='file'
             multiple
             className='hidden'
+            aria-label='Attach files'
             onChange={(e) => {
               if (e.target.files?.length) {
                 onAddAttachments(e.target.files);

@@ -737,6 +737,7 @@ export default function DemoForm() {
                       <field.Field>
                         <field.FieldLabel htmlFor={field.name}>Favorite Color</field.FieldLabel>
                         <div className='flex items-center gap-3'>
+                          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                           <input
                             id={field.name}
                             type='color'

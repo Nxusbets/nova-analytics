@@ -50,6 +50,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
           rows={1}
           className='max-h-[150px] flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground'
           disabled={isLoading}
+          aria-label='Ask a question'
         />
       </div>
       <Button

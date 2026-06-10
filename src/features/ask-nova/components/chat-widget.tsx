@@ -10,7 +10,6 @@ import { ConversationList } from './conversation-list';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import type { ChatMessage } from '../api/types';
 
 type StreamMessage = {
   role: 'user' | 'assistant';
@@ -231,6 +230,7 @@ export function ChatWidget() {
       {open && (
         <>
           {/* Backdrop */}
+          {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
           <div className='fixed inset-0 z-40 bg-black/20' onClick={() => setOpen(false)} />
 
           {/* Panel */}

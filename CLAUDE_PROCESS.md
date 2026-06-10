@@ -442,3 +442,31 @@ The shared Neon database had 6 tables from another Prisma-based project (`ChatSe
 
 ### Status
 ✅ Complete.
+
+---
+
+## Round 2 — Entry 10: Refactor Ask Nova to Floating Chat Widget
+
+- **Date**: 2026-06-10
+- **Goal**: Convert Ask Nova from a full-page route to a floating widget visible across all dashboard pages.
+
+### Context
+User requested a floating chat widget (like Intercom) instead of a dedicated page at `/dashboard/ask-nova`.
+
+### Actions Taken
+1. **Created `src/features/ask-nova/components/chat-widget.tsx`** — Floating action button (bottom-right) + overlay panel:
+   - Fixed `size-12` button with chat/close icons
+   - 480×600px panel with rounded corners, backdrop overlay
+   - Click-outside-to-close on backdrop
+   - Reuses existing `MessageBubble`, `ChatInput`, `ConversationList` components
+   - Same streaming logic as the original `ChatInterface`
+2. **Added `<ChatWidget />`** to `src/app/dashboard/layout.tsx` — visible on all dashboard pages
+3. **Removed** `src/app/dashboard/ask-nova/page.tsx` and `ask-nova-page.tsx`
+4. **Removed "Ask Nova" entry** from `src/config/nav-config.ts`
+5. **Fixed input visibility** — `ChatInput` is always rendered at the bottom of the panel, even in empty state. Suggested questions shown above the input when no messages exist.
+
+### Build Verification
+- `npm run build` — zero errors, 27 routes (was 28, removed `/dashboard/ask-nova`).
+
+### Status
+✅ Complete.

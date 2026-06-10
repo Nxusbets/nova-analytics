@@ -254,32 +254,30 @@ export function ChatWidget() {
 
             {/* Chat area */}
             <div className='flex flex-1 flex-col rounded-r-2xl'>
-              {activeConversationId || messages.length > 0 ? (
-                <>
-                  <div className='flex-1 overflow-y-auto p-3'>
-                    {loadingMessages && (
-                      <div className='flex items-center justify-center py-8'>
-                        <Icons.spinner className='size-4 animate-spin text-muted-foreground' />
-                      </div>
-                    )}
-                    {!loadingMessages && (
-                      <div className='space-y-3'>
-                        {messages.map((msg, i) => (
-                          <MessageBubble
-                            key={i}
-                            role={msg.role}
-                            content={msg.content}
-                            isStreaming={
-                              isStreaming && i === messages.length - 1 && msg.role === 'assistant'
-                            }
-                          />
-                        ))}
-                        <div ref={messagesEndRef} />
-                      </div>
-                    )}
-                  </div>
-                  <ChatInput onSend={handleSend} isLoading={isStreaming} />
-                </>
+              {/* Messages or empty state */}
+              {messages.length > 0 ? (
+                <div className='flex-1 overflow-y-auto p-3'>
+                  {loadingMessages && (
+                    <div className='flex items-center justify-center py-8'>
+                      <Icons.spinner className='size-4 animate-spin text-muted-foreground' />
+                    </div>
+                  )}
+                  {!loadingMessages && (
+                    <div className='space-y-3'>
+                      {messages.map((msg, i) => (
+                        <MessageBubble
+                          key={i}
+                          role={msg.role}
+                          content={msg.content}
+                          isStreaming={
+                            isStreaming && i === messages.length - 1 && msg.role === 'assistant'
+                          }
+                        />
+                      ))}
+                      <div ref={messagesEndRef} />
+                    </div>
+                  )}
+                </div>
               ) : (
                 <div className='flex flex-1 flex-col items-center justify-center gap-3 p-4 text-center'>
                   <div className='bg-primary/10 flex size-12 items-center justify-center rounded-2xl'>
@@ -306,6 +304,8 @@ export function ChatWidget() {
                   </div>
                 </div>
               )}
+              {/* Always show input at the bottom */}
+              <ChatInput onSend={handleSend} isLoading={isStreaming} />
             </div>
           </div>
         </>

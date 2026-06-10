@@ -4,6 +4,7 @@ import Header from '@/components/layout/header';
 import { InfoSidebar } from '@/components/layout/info-sidebar';
 import { InfobarProvider } from '@/components/ui/infobar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { ChatWidget } from '@/features/ask-nova/components/chat-widget';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 
@@ -33,6 +34,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </InfobarProvider>
         </SidebarInset>
       </SidebarProvider>
+      <ChatWidget />
     </KBar>
   );
 }

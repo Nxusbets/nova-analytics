@@ -91,14 +91,6 @@ export const navGroups: NavGroup[] = [
         shortcut: ['c', 'c'],
         isActive: false,
         items: []
-      },
-      {
-        title: 'Ask Nova',
-        url: '/dashboard/ask-nova',
-        icon: 'chat',
-        shortcut: ['a', 'n'],
-        isActive: false,
-        items: []
       }
     ]
   },

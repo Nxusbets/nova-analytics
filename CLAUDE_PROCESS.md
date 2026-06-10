@@ -181,4 +181,72 @@ mkdir -p supabase/migrations
 
 ---
 
-## Round 2 — Entry 3: [Next Task]
+## Round 2 — Entry 3: Build Ask Nova Feature Module
+
+- **Date**: 2026-06-10
+- **Goal**: Create the "Ask Nova" AI assistant feature with OpenAI integration, streaming, and chat UI.
+
+### Actions Taken
+
+#### Feature Module (`src/features/ask-nova/`)
+1. **`api/types.ts`** — Type definitions: `ChatMessage`, `Conversation`, `AskNovaRequest`, `StreamChunk`
+2. **`api/service.ts`** — Data access layer:
+   - `createConversation(userId, title)` — inserts new conversation in Supabase
+   - `getConversations(userId)` — lists user's conversations ordered by `updated_at`
+   - `getMessages(conversationId)` — fetches messages for a conversation
+   - `saveMessage(conversationId, role, content)` — saves a message
+   - `updateConversationTitle(conversationId, title)` — renames conversation
+   - `getDashboardContext()` — aggregates all dashboard mock data (products, revenue: $1,250, customers: 1,234, accounts: 45,678, growth: 4.5%, sales, monthly revenue, browser visitors) into a single JSON string for grounding AI responses
+   - `buildSystemPrompt()` — guardrails: stay on-topic, no fabricated data, be concise
+3. **`api/queries.ts`** — React Query key factories + `queryOptions` for conversations and messages
+
+#### API Route (`src/app/api/ask-nova/route.ts`)
+- **POST /api/ask-nova** — Server-side OpenAI proxy with streaming
+- Auth: Clerk `auth()` → 401 unauthenticated
+- Accepts `{ conversationId?, message }`
+- Creates new conversation if no `conversationId` provided
+- Saves user message to Supabase, loads last 20 messages as history
+- Builds OpenAI messages array: system prompt + dashboard context + history + user message
+- Calls OpenAI `/v1/chat/completions` with `stream: true`
+- Streams tokens back as SSE (`data: { type: 'token', content: '...' }`)
+- On stream end: saves assistant message to Supabase, sends `type: 'done'` event
+- Graceful fallback if `OPENAI_API_KEY` is not set
+- Error handling for OpenAI API errors, stream interruptions, and unexpected failures
+
+#### Chat UI Components
+1. **`message-bubble.tsx`** — Styled message bubble with user/assistant icons (primary vs muted), streaming spinner for in-progress messages
+2. **`chat-input.tsx`** — Auto-resizing textarea with Enter/Shift+Enter handling, send button with loading spinner
+3. **`conversation-list.tsx`** — Sidebar listing conversation history with new chat button, active state highlighting
+4. **`chat-interface.tsx`** — Main orchestrator:
+   - Loads conversations and messages from Supabase on mount
+   - Handles streaming via `response.body.getReader()` + `TextDecoder`
+   - Abort controller for canceling in-flight requests
+   - Empty state with suggested questions (best-selling category, monthly trends, total revenue, active accounts)
+   - Error handling with toast notifications
+   - Re-fetches conversation list after each exchange
+
+#### Page Route
+- `src/app/dashboard/ask-nova/page.tsx` — Server component with metadata
+- `src/features/ask-nova/components/ask-nova-page.tsx` — Wraps ChatInterface in PageContainer
+
+#### Navigation
+- Added "Ask Nova" to `src/config/nav-config.ts` in Overview group, after Chat, with shortcut `['a', 'n']`
+
+### Challenges & Fixes
+- **Supabase TypeScript errors**: `db().from('conversations')` returns `never[]` because Supabase doesn't know the table schema. Fix: Cast entire query chain with `as any`.
+- **Build-time SUPABASE_URL error**: Initializing Supabase client at module level caused build failure when env vars weren't set. Fix: Lazily initialize via `getSupabaseAdmin()` function.
+- **Build verification**: `npm run build` succeeded with zero errors. 28 routes generated (new: `/dashboard/ask-nova`, `/api/ask-nova`).
+
+### Commands Run
+```bash
+mkdir -p src/features/ask-nova/api src/features/ask-nova/components
+mkdir -p src/app/api/ask-nova src/app/dashboard/ask-nova
+npm run build
+```
+
+### Status
+✅ Complete.
+
+---
+
+## Round 2 — Entry 4: [Next Task]

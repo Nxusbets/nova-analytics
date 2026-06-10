@@ -15,7 +15,9 @@
     "lint:strict": "oxlint --deny-warnings",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:e2e": "playwright test --config e2e/playwright.config.ts",
+    "test:e2e:ui": "playwright test --config e2e/playwright.config.ts --ui"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.3.5",
@@ -94,6 +96,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^9.9.0",
+    "@playwright/test": "^1.60.0",
     "@types/node": "22.10.2",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",

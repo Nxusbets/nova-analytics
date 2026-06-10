@@ -249,4 +249,52 @@ npm run build
 
 ---
 
-## Round 2 — Entry 4: [Next Task]
+## Round 2 — Entry 4: Add E2E Tests & CI Pipeline
+
+- **Date**: 2026-06-10
+- **Goal**: Add Playwright E2E tests and GitHub Actions CI workflow.
+
+### Actions Taken
+
+#### Playwright Setup
+1. **Installed** `@playwright/test` (dev dependency)
+2. **Installed** Chromium browser via `npx playwright install chromium`
+3. **Created** `e2e/playwright.config.ts` — config with 60s timeout, 2 retries, chromium project, configurable `E2E_BASE_URL`
+4. **Added** test scripts to `package.json`: `test:e2e` and `test:e2e:ui`
+
+#### E2E Test Files
+1. **`e2e/landing.spec.ts`** — 3 tests:
+   - Landing page loads with all CTAs (Start free trial, Sign in)
+   - Features section visible
+   - Header navigation links work
+2. **`e2e/auth.spec.ts`** — 4 tests:
+   - Sign-up page loads without error (no 500)
+   - Sign-in page loads with form
+   - Unauthenticated access to dashboard redirects to sign-in
+   - Demo cookie (`demo_session=demo_user_nova`) does NOT grant dashboard access (redirects to sign-in)
+3. **`e2e/ask-nova.spec.ts`** — 2 tests:
+   - Ask Nova page shows empty state with suggested questions
+   - Sending a question displays user message in chat
+
+#### GitHub Actions CI
+- **Created** `.github/workflows/ci.yml`:
+  - Triggers on push/PR to `main`
+  - Node.js 22 setup
+  - `npm ci` → lint → build → install Playwright → run E2E tests
+  - All secrets passed via GitHub Actions secrets
+  - `NEXT_PUBLIC_SENTRY_DISABLED: 'true'` to skip Sentry in CI
+
+### Commands Run
+```bash
+npm install -D @playwright/test
+npx playwright install chromium
+mkdir -p .github/workflows
+npm run build
+```
+
+### Status
+✅ Complete.
+
+---
+
+## Round 2 — Entry 5: [Next Task]

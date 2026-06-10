@@ -4,7 +4,7 @@ test.describe('Landing Page', () => {
   test('loads successfully with all CTAs', async ({ page }) => {
     await page.goto('/');
 
-    await expect(page.locator('text=Nova Analytics')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Nova Analytics' }).first()).toBeVisible();
 
     await expect(page.locator('text=Turn data into decisions')).toBeVisible();
 

@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { ClerkProvider } from '@clerk/nextjs';
 import { ActiveThemeProvider } from '../themes/active-theme';
 import QueryProvider from './query-provider';
 import { AuthProvider } from '@/hooks/use-auth';
@@ -12,10 +13,12 @@ export default function Providers({
   children: React.ReactNode;
 }) {
   return (
-    <ActiveThemeProvider initialTheme={activeThemeValue}>
-      <AuthProvider>
-        <QueryProvider>{children}</QueryProvider>
-      </AuthProvider>
-    </ActiveThemeProvider>
+    <ClerkProvider>
+      <ActiveThemeProvider initialTheme={activeThemeValue}>
+        <AuthProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </AuthProvider>
+      </ActiveThemeProvider>
+    </ClerkProvider>
   );
 }

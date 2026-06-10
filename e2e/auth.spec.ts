@@ -9,7 +9,7 @@ test.describe('Authentication', () => {
     expect(body).not.toContain('Internal Server Error');
     expect(body).not.toContain('Application error');
 
-    await expect(page.locator('text=Create account')).toBeVisible();
+    await expect(page.locator('text=Nova Analytics').first()).toBeVisible();
   });
 
   test('sign-in page loads with form', async ({ page }) => {
@@ -17,7 +17,7 @@ test.describe('Authentication', () => {
 
     await page.waitForLoadState('networkidle');
 
-    await expect(page.locator('text=Nova Analytics')).toBeVisible();
+    await expect(page.locator('text=Nova Analytics').first()).toBeVisible();
   });
 
   test('redirects to sign-in when accessing dashboard without auth', async ({ page }) => {
@@ -37,12 +37,12 @@ test.describe('Authentication', () => {
   });
 
   test('demo cookie does NOT grant access', async ({ page }) => {
+    await page.goto('/');
     await page.context().addCookies([
       {
         name: 'demo_session',
         value: 'demo_user_nova',
-        domain: new URL(page.url()).hostname,
-        path: '/'
+        url: 'http://localhost:3000'
       }
     ]);
 

@@ -297,4 +297,47 @@ npm run build
 
 ---
 
-## Round 2 — Entry 5: [Next Task]
+## Round 2 — Entry 5: Create VERIFICATION.md
+
+- **Date**: 2026-06-10
+- **Goal**: Create verification checklist for live deployment testing.
+
+### Actions Taken
+1. **Created** `VERIFICATION.md` at repository root
+
+### VERIFICATION.md Sections
+| Section | Items | Description |
+|---------|-------|-------------|
+| 1. Landing Page CTAs | 6 items | Headline visibility, CTA buttons, features, nav |
+| 2. Signup Flow | 3 items | Page loads (no 500), form renders, nav links |
+| 3. Login with Reviewer | 4 items | Form loads, login succeeds, redirect to dashboard |
+| 4. Dashboard Sections | 6 items | Overview, Product, Users, Kanban, Chat, Profile |
+| 5. Ask Nova Chat | 7 items | Page loads, empty state, grounded answers for specific questions, streaming, persistence, off-topic handling |
+| 6. Logout | 3 items | Button visible, redirect, dashboard blocked |
+| 7. Demo Cookie Blocking | 2 items | `demo_session` cookie blocked, no bypass |
+
+### Known Limitations Documented
+1. Chat persistence requires Supabase setup
+2. Ask Nova requires `OPENAI_API_KEY`
+3. Clerk API keys required (no demo mode)
+4. E2E tests require live deployment with Clerk configured
+5. No rate limiting on Ask Nova API
+6. Conversation titles are first message preview
+
+### Setup Instructions for Reviewer
+- Create Clerk app and set env vars
+- Run Supabase migration
+- Create reviewer account in Clerk Dashboard
+- Deploy to Vercel
+
+### Commands Run
+```bash
+# No commands — pure documentation
+```
+
+### Status
+✅ Complete.
+
+---
+
+## Round 2 — Entry 6: [Next Task]

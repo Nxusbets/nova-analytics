@@ -91,3 +91,62 @@
     - Feature cleanup instructions
   - **Build verification**: `npm run build` succeeded with zero errors (26 routes).
 - **Status**: ✅ Complete.
+
+---
+
+## Round 2 — Entry 1: Remove Demo Mode & Enforce Clerk-Only Auth
+
+- **Date**: 2026-06-10
+- **Goal**: Remove the hardcoded `demo_session=demo_user_nova` cookie bypass and enforce real Clerk authentication for all routes.
+
+### Context
+The codebase had a dual-mode auth system: if Clerk env vars were present, it used Clerk; otherwise it fell back to a hardcoded demo cookie (`demo_session=demo_user_nova`). This was a security issue — anyone setting this cookie could access `/dashboard` without real credentials.
+
+### Files Deleted (4)
+1. `src/lib/demo-auth.ts` — Constants `DEMO_USER_ID`, `DEMO_SESSION_COOKIE`, helper `isClerkConfigured()`
+2. `src/lib/demo-auth-server.ts` — Server-side `demoAuth()` function that read the cookie
+3. `src/features/auth/components/demo-sign-in.tsx` — Client component that set the demo cookie via `document.cookie`
+4. `src/components/layout/demo-provider.tsx` — `DemoProvider` context that always returned a hardcoded signed-in user
+
+### Files Rewritten (8)
+1. **`src/proxy.ts`** — Removed the `isClerkConfigured()` branch that fell back to cookie checking. Now uses `clerkMiddleware` only.
+2. **`src/hooks/use-auth.tsx`** — Removed `DemoAuthProvider` component and the `isClerkConfigured()` branching in `AuthProvider`. Now directly uses Clerk hooks (`useUser`, `useOrganization`, `useAuth`, `useOrganizationList`).
+3. **`src/app/page.tsx`** — Removed the `isClerkConfigured()` branch and `demoAuth()` import. Now only uses Clerk's `auth()` for the landing page redirect.
+4. **`src/features/auth/components/sign-in-view.tsx`** — Removed the `isClerkConfigured()` conditional that showed `DemoSignIn` as fallback. Always renders Clerk's `<SignIn>` component.
+5. **`src/features/auth/components/sign-up-view.tsx`** — Split into server component + `sign-up-form-wrapper.tsx` client component. Added `SignUpErrorBoundary` React class component to catch Clerk SDK failures gracefully instead of HTTP 500.
+6. **`src/app/dashboard/billing/page.tsx`** — Removed `isClerkConfigured` check, always renders `ClerkBillingPage`.
+7. **`src/app/dashboard/exclusive/page.tsx`** — Removed `isClerkConfigured` check, always renders `ClerkExclusivePage`.
+8. **`src/app/dashboard/page.tsx`** — Simplified to use Clerk's `auth()` directly.
+9. **`src/app/dashboard/workspaces/page.tsx`** — Removed fallback UI, always renders `OrganizationList`.
+10. **`src/app/dashboard/workspaces/team/[[...rest]]/page.tsx`** — Removed fallback UI, always renders `OrganizationProfile`.
+11. **`src/components/layout/app-sidebar.tsx`** — Removed `isClerkConfigured` import and `signOut` from destructuring, always uses Clerk `SignOutButton`.
+12. **`src/components/layout/user-nav.tsx`** — Removed dynamic `require()` for Clerk, statically imports `SignOutButton`.
+13. **`src/features/profile/components/profile-view-page.tsx`** — Removed fallback UI, always renders Clerk `UserProfile`.
+
+### Build Verification
+- `npm run build` succeeded with zero errors after removing all demo-auth references.
+- All imports from `@/lib/demo-auth` and `@/lib/demo-auth-server` have been purged from the codebase.
+- Running `rg 'demo_auth|demo_session|DemoProvider|isClerkConfigured' src/` returns zero matches.
+
+### Commands Run
+```bash
+# Remove demo-auth files
+rm src/lib/demo-auth.ts src/lib/demo-auth-server.ts
+rm src/features/auth/components/demo-sign-in.tsx
+rm src/components/layout/demo-provider.tsx
+
+# Verify no remaining references
+rg -r '' 'demo-auth|demo_provider|demoProvider|DemoProvider|DEMO_SESSION|demo_session|DEMO_USER_ID|isClerkConfigured|getDemoUser|demoAuth' --include '*.ts' --include '*.tsx' src/
+
+# Build to verify
+npm run build
+```
+
+### Failed Attempts
+- **First attempt**: Added `'use client'` to `sign-up-view.tsx` to use `ErrorBoundary` class component. This broke the `metadata` export (server-only). Fix: Split into server `sign-up-view.tsx` + client `sign-up-form-wrapper.tsx`.
+- **Only rewrote 4 files initially**, but `npm run build` revealed 8 more files still importing `isClerkConfigured`. Fix: Used a sub-agent to batch-fix all remaining files.
+- **Status**: ✅ Complete.
+
+---
+
+## Round 2 — Entry 3: [Next Task]

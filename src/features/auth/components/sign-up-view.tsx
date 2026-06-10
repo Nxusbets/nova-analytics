@@ -1,10 +1,10 @@
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { SignUp as ClerkSignUpForm } from '@clerk/nextjs';
 import { Icons } from '@/components/icons';
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { InteractiveGridPattern } from './interactive-grid';
+import { SignUpFormWrapper } from './sign-up-form-wrapper';
 
 export const metadata: Metadata = {
   title: 'Authentication',
@@ -49,11 +49,7 @@ export default function SignUpViewPage() {
       </div>
       <div className='flex h-full items-center justify-center p-4 lg:p-8'>
         <div className='flex w-full max-w-md flex-col items-center justify-center space-y-6'>
-          <ClerkSignUpForm
-            initialValues={{
-              emailAddress: 'admin@novaanalytics.io'
-            }}
-          />
+          <SignUpFormWrapper />
           <p className='text-muted-foreground px-8 text-center text-sm'>
             By clicking continue, you agree to our{' '}
             <Link

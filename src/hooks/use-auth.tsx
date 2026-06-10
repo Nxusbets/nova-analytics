@@ -1,8 +1,7 @@
 'use client';
 
+import { useUser, useOrganization, useAuth, useOrganizationList } from '@clerk/nextjs';
 import { createContext, useContext, type ReactNode } from 'react';
-import { isClerkConfigured } from '@/lib/demo-auth';
-import type { useDemoAuth } from '@/components/layout/demo-provider';
 
 export interface AuthUser {
   id: string;
@@ -68,16 +67,6 @@ export function useAuthContext(): AuthContextType {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  if (isClerkConfigured()) {
-    return <ClerkAuthProvider>{children}</ClerkAuthProvider>;
-  }
-  return <DemoAuthProvider>{children}</DemoAuthProvider>;
-}
-
-function ClerkAuthProvider({ children }: { children: ReactNode }) {
-  const Clerk = require('@clerk/nextjs');
-  const { useUser, useOrganization, useAuth, useOrganizationList } = Clerk;
-
   const { user: clerkUser, isLoaded: userLoaded, isSignedIn } = useUser();
   const { organization, membership, isLoaded: orgLoaded } = useOrganization();
   const { orgId, orgSlug } = useAuth();
@@ -150,38 +139,6 @@ function ClerkAuthProvider({ children }: { children: ReactNode }) {
         ) ?? []
     },
     setActiveOrg: setActive ? (id: string) => setActive({ organization: id }) : null
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-function DemoAuthProvider({ children }: { children: ReactNode }) {
-  const { useDemoAuth: useDemoAuthHook } = require('@/components/layout/demo-provider') as {
-    useDemoAuth: typeof useDemoAuth;
-  };
-  const { user: demoUser, isLoaded, isSignedIn, orgId, orgSlug, signOut } = useDemoAuthHook();
-
-  const value: AuthContextType = {
-    user: demoUser
-      ? {
-          id: demoUser.id,
-          fullName: `${demoUser.firstName} ${demoUser.lastName}`,
-          firstName: demoUser.firstName,
-          lastName: demoUser.lastName,
-          emailAddresses: [{ emailAddress: demoUser.email }],
-          imageUrl: demoUser.imageUrl
-        }
-      : null,
-    orgId,
-    orgSlug,
-    isLoaded,
-    isSignedIn,
-    signOut,
-    organization: null,
-    permissions: [],
-    role: undefined,
-    orgMemberships: { data: [] },
-    setActiveOrg: null
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

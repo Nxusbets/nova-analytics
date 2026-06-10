@@ -5,8 +5,6 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { InteractiveGridPattern } from './interactive-grid';
 import { Icons } from '@/components/icons';
-import { DemoSignIn } from './demo-sign-in';
-import { isClerkConfigured } from '@/lib/demo-auth';
 
 export const metadata: Metadata = {
   title: 'Authentication',
@@ -51,34 +49,28 @@ export default function SignInViewPage() {
       </div>
       <div className='flex h-full items-center justify-center p-4 lg:p-8'>
         <div className='flex w-full max-w-md flex-col items-center justify-center space-y-6'>
-          {isClerkConfigured() ? (
-            <>
-              <ClerkSignInForm
-                initialValues={{
-                  emailAddress: 'admin@novaanalytics.io'
-                }}
-              />
-              <p className='text-muted-foreground px-8 text-center text-sm'>
-                By clicking continue, you agree to our{' '}
-                <Link
-                  href='/terms-of-service'
-                  className='hover:text-primary underline underline-offset-4'
-                >
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link
-                  href='/privacy-policy'
-                  className='hover:text-primary underline underline-offset-4'
-                >
-                  Privacy Policy
-                </Link>
-                .
-              </p>
-            </>
-          ) : (
-            <DemoSignIn />
-          )}
+          <ClerkSignInForm
+            initialValues={{
+              emailAddress: 'admin@novaanalytics.io'
+            }}
+          />
+          <p className='text-muted-foreground px-8 text-center text-sm'>
+            By clicking continue, you agree to our{' '}
+            <Link
+              href='/terms-of-service'
+              className='hover:text-primary underline underline-offset-4'
+            >
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link
+              href='/privacy-policy'
+              className='hover:text-primary underline underline-offset-4'
+            >
+              Privacy Policy
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </div>

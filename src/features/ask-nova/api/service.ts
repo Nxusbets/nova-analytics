@@ -1,38 +1,38 @@
-import { getSupabaseAdmin } from '@/lib/supabase';
+import { getDb } from '@/lib/neon';
 import type { Conversation, ChatMessage } from './types';
 
-function db() {
-  return getSupabaseAdmin();
-}
+type Row = Record<string, unknown>;
 
 export async function createConversation(userId: string, title: string): Promise<Conversation> {
-  const { data, error } = await (db().from('conversations') as any)
-    .insert({ user_id: userId, title })
-    .select()
-    .single();
-
-  if (error) throw new Error(`Failed to create conversation: ${error.message}`);
-  return data as unknown as Conversation;
+  const sql = getDb();
+  const rows = (await sql`
+    INSERT INTO conversations (user_id, title)
+    VALUES (${userId}, ${title})
+    RETURNING id, user_id, title, created_at, updated_at
+  `) as Row[];
+  return rows[0] as unknown as Conversation;
 }
 
 export async function getConversations(userId: string): Promise<Conversation[]> {
-  const { data, error } = await (db().from('conversations') as any)
-    .select('*')
-    .eq('user_id', userId)
-    .order('updated_at', { ascending: false });
-
-  if (error) throw new Error(`Failed to fetch conversations: ${error.message}`);
-  return (data ?? []) as unknown as Conversation[];
+  const sql = getDb();
+  const rows = (await sql`
+    SELECT id, user_id, title, created_at, updated_at
+    FROM conversations
+    WHERE user_id = ${userId}
+    ORDER BY updated_at DESC
+  `) as Row[];
+  return (rows ?? []) as unknown as Conversation[];
 }
 
 export async function getMessages(conversationId: string): Promise<ChatMessage[]> {
-  const { data, error } = await (db().from('messages') as any)
-    .select('*')
-    .eq('conversation_id', conversationId)
-    .order('created_at', { ascending: true });
-
-  if (error) throw new Error(`Failed to fetch messages: ${error.message}`);
-  return (data ?? []) as unknown as ChatMessage[];
+  const sql = getDb();
+  const rows = (await sql`
+    SELECT id, conversation_id, role, content, created_at
+    FROM messages
+    WHERE conversation_id = ${conversationId}
+    ORDER BY created_at ASC
+  `) as Row[];
+  return (rows ?? []) as unknown as ChatMessage[];
 }
 
 export async function saveMessage(
@@ -40,24 +40,25 @@ export async function saveMessage(
   role: 'user' | 'assistant' | 'system',
   content: string
 ): Promise<ChatMessage> {
-  const { data, error } = await (db().from('messages') as any)
-    .insert({ conversation_id: conversationId, role, content })
-    .select()
-    .single();
-
-  if (error) throw new Error(`Failed to save message: ${error.message}`);
-  return data as unknown as ChatMessage;
+  const sql = getDb();
+  const rows = (await sql`
+    INSERT INTO messages (conversation_id, role, content)
+    VALUES (${conversationId}, ${role}, ${content})
+    RETURNING id, conversation_id, role, content, created_at
+  `) as Row[];
+  return rows[0] as unknown as ChatMessage;
 }
 
 export async function updateConversationTitle(
   conversationId: string,
   title: string
 ): Promise<void> {
-  const { error } = await (db().from('conversations') as any)
-    .update({ title, updated_at: new Date().toISOString() })
-    .eq('id', conversationId);
-
-  if (error) throw new Error(`Failed to update conversation: ${error.message}`);
+  const sql = getDb();
+  await (sql`
+    UPDATE conversations
+    SET title = ${title}, updated_at = NOW()
+    WHERE id = ${conversationId}
+  ` as Promise<unknown>);
 }
 
 export function getDashboardContext(): string {

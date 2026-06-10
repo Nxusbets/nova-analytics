@@ -340,4 +340,77 @@ npm run build
 
 ---
 
-## Round 2 — Entry 6: [Next Task]
+## Round 2 — Entry 6: Switch Database from Supabase to Neon
+
+- **Date**: 2026-06-10
+- **Goal**: Replace Supabase with Neon PostgreSQL for chat history persistence.
+
+### Context
+User provided Neon credentials directly (`DATABASE_URL`). Supabase was initially chosen but was swapped out since Neon was preferred.
+
+### Actions Taken
+1. **Installed** `@neondatabase/serverless` (removed `@supabase/supabase-js`)
+2. **Created** `src/lib/neon.ts` — Lazy-initialized Neon SQL client via `neon()` tagged template literal
+3. **Rewrote** `src/features/ask-nova/api/service.ts` — All 5 CRUD functions converted from Supabase `.from().select()` chaining to Neon tagged template SQL:
+   - `createConversation` — `INSERT ... RETURNING`
+   - `getConversations` — `SELECT ... WHERE user_id = $1 ORDER BY updated_at DESC`
+   - `getMessages` — `SELECT ... WHERE conversation_id = $1 ORDER BY created_at ASC`
+   - `saveMessage` — `INSERT ... RETURNING`
+   - `updateConversationTitle` — `UPDATE ... SET title = $1`
+4. **Deleted** `src/lib/supabase.ts` — No longer needed
+5. **Deleted** `supabase/migrations/` directory — SQL run against Neon instead
+6. **Ran migration** against Neon database — Created `conversations` and `messages` tables with same schema, including indexes on `user_id` and `conversation_id`
+7. **Updated** `.env.local` — Added `DATABASE_URL` with Neon connection string
+8. **Updated** `env.example.txt` — Replaced Supabase section with Neon `DATABASE_URL`
+
+### TypeScript Approach
+- Neon's tagged template `sql` returns a complex union type (`any[][] | Record<string, any>[] | FullQueryResults<boolean>`). Used `as Row[]` cast (where `Row = Record<string, unknown>`) across all query functions to satisfy strict mode.
+
+### Build Verification
+- `npm run build` — zero errors, 28 routes.
+
+### Status
+✅ Complete.
+
+---
+
+## Round 2 — Entry 7: Integrate OpenAI API Key
+
+- **Date**: 2026-06-10
+- **Goal**: Add working OpenAI API key so Ask Nova responds with real AI answers.
+
+### Actions Taken
+1. **Added** `OPENAI_API_KEY` to `.env.local`
+2. **Verified key works** — `GET /v1/models` returned model list successfully
+3. **Updated** `env.example.txt` (already had `OPENAI_API_KEY` section)
+
+### Build Verification
+- `npm run build` — zero errors, 28 routes.
+- Ask Nova API route now uses `OPENAI_API_KEY` from env instead of falling back to static message.
+
+### Status
+✅ Complete.
+
+---
+
+## Round 2 — Entry 8: Database Reset & Migration
+
+- **Date**: 2026-06-10
+- **Goal**: Clean up Neon database (remove foreign tables from other projects) and recreate project tables.
+
+### Context
+The shared Neon database had 6 tables from another Prisma-based project (`ChatSession`, `Message`, `PlacedBet`, `ProviderKey`, `User`, `_prisma_migrations`).
+
+### Actions Taken
+1. **Listed all tables** via `information_schema.tables` — confirmed 6 foreign tables + our 2
+2. **Dropped foreign tables** with `DROP TABLE ... CASCADE` in correct dependency order
+3. **Recreated project tables** — `conversations` + `messages` with indexes
+4. **Built `scripts/migrate.mjs`** — re-executable migration script using `sql.query()` (not tagged templates) to avoid "cannot insert multiple commands into a prepared statement" error
+5. **Added `migrate` script** to `package.json`: `node --env-file=.env.local scripts/migrate.mjs`
+6. **Deleted old `supabase/` directory** and `@supabase/supabase-js` dependency
+
+### Build Verification
+- `npm run build` — zero errors.
+
+### Status
+✅ Complete.

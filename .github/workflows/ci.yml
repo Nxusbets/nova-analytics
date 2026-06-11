@@ -15,6 +15,10 @@ jobs:
       CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      NEXT_PUBLIC_CLERK_SIGN_IN_URL: '/auth/sign-in'
+      NEXT_PUBLIC_CLERK_SIGN_UP_URL: '/auth/sign-up'
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: '/dashboard/overview'
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: '/dashboard/overview'
       NEXT_PUBLIC_SENTRY_DISABLED: 'true'
 
     steps:

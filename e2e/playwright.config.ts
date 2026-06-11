@@ -19,7 +19,13 @@ export default defineConfig({
       ...(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
         ? { NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }
         : {}),
-      ...(process.env.CLERK_SECRET_KEY ? { CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY } : {})
+      ...(process.env.CLERK_SECRET_KEY ? { CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY } : {}),
+      NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || '/auth/sign-in',
+      NEXT_PUBLIC_CLERK_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || '/auth/sign-up',
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL:
+        process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL || '/dashboard/overview',
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL:
+        process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL || '/dashboard/overview'
     }
   },
   projects: [

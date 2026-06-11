@@ -14,7 +14,13 @@ export default defineConfig({
     port: 3000,
     reuseExistingServer: !process.env.CI,
     cwd: '..',
-    timeout: 30000
+    timeout: 30000,
+    env: {
+      ...(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+        ? { NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }
+        : {}),
+      ...(process.env.CLERK_SECRET_KEY ? { CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY } : {})
+    }
   },
   projects: [
     {
